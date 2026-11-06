@@ -1,79 +1,93 @@
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import java.time.LocalDate;
-
+/**
+ * Saída de alimentos para uma Instituicao (UC04). O saldo só é reduzido em
+ * concluir(), e apenas se todos os itens forem válidos (RN03, RN04, RN05).
+ */
 public class Distribuicao {
-    public int getId() {
-        return id;
+    private final UUID id;
+    private final LocalDateTime data;
+    private final Instituicao destino;
+    private final List<ItemDistribuicao> itens = new ArrayList<>();
+    private boolean concluida;
+
+    public Distribuicao(Instituicao destino) {
+        this(destino, LocalDateTime.now());
     }
 
-    public Alimento getNovoAlimento() {
-
-        return novoAlimento;
-    }
-
-    public void setNovoAlimento(Alimento novoAlimento) {
-
-        this.novoAlimento = novoAlimento;
-    }
-
-    public double getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public LocalDate getData() {
-        return data;
-    }
-
-    public void setData(LocalDate data) {
+    public Distribuicao(Instituicao destino, LocalDateTime data) {
+        if (destino == null) {
+            throw new ValidacaoException("A distribuição exige uma instituição destinatária.");
+        }
+        if (data == null) {
+            throw new ValidacaoException("A distribuição exige uma data.");
+        }
+        this.id = UUID.randomUUID();
+        this.destino = destino;
         this.data = data;
     }
 
-    public String getBeneficiario() {
-        return beneficiario;
-    }
-
-    public void setBeneficiario(String beneficiario) {
-        this.beneficiario = beneficiario;
-    }
-
-    public boolean isProcessada() {
-        return processada;
-    }
-
-    private int id;
-    private Alimento novoAlimento;
-    private double quantidade;
-    private LocalDate data;
-    private String beneficiario;
-    private boolean processada;
-
-    public Distribuicao(int id, Alimento novoAlimento, double quantidade, String beneficiario) {
-        this.id = id;
-        this.novoAlimento = novoAlimento;
-        this.quantidade = quantidade;
-        this.data = LocalDate.now();
-        this.beneficiario = beneficiario;
-        this.processada = false;
-    }
-
-    public boolean processar(Estoque estoque){
-        if (this.processada){
-            System.out.println("Erro ao procesar a doação. Essa doação já foi processada");
-            return false;
-
-        } if (this.quantidade >0 && this.novoAlimento != null && this.novoAlimento.verificarValidade() && this.quantidade <= estoque.getQuantidade()){
-            System.out.println("A doção foi solicitada" + this.quantidade + "kg");
-            estoque.registrarDistribuicao(this.quantidade);
-            System.out.println("Doação realizada com sucesso");
-            this.processada = true;
-            return true;
-        } else {
-            System.out.println("Quantidade insuficinete");
-            return false;
+    public ItemDistribuicao adicionarItem(Lote lote, BigDecimal quantidade) {
+        if (concluida) {
+            throw new ValidacaoException("Distribuição concluída não pode receber novos itens.");
         }
+        if (lote == null) {
+            throw new ValidacaoException("Item da distribuição exige um lote.");
+        }
+        Lote.exigirPositiva(quantidade);
+        ItemDistribuicao item = new ItemDistribuicao(quantidade, lote);
+        itens.add(item);
+        return item;
+    }
+
+    /**
+     * Valida todos os itens primeiro (somando pedidos repetidos do mesmo lote)
+     * e só então retira. Se qualquer item falhar, nenhum saldo é alterado.
+     */
+    public void concluir() {
+        if (concluida) {
+            throw new ValidacaoException("Distribuição já concluída.");
+        }
+        if (itens.isEmpty()) {
+            throw new ValidacaoException("A distribuição precisa ter pelo menos um item.");
+        }
+        Map<Lote, BigDecimal> totalPorLote = new LinkedHashMap<>();
+        for (ItemDistribuicao item : itens) {
+            totalPorLote.merge(item.getLote(), item.getQuantidade(), BigDecimal::add);
+        }
+        for (Map.Entry<Lote, BigDecimal> e : totalPorLote.entrySet()) {
+            e.getKey().validarRetirada(e.getValue(), data.toLocalDate());
+        }
+        for (Map.Entry<Lote, BigDecimal> e : totalPorLote.entrySet()) {
+            e.getKey().retirar(e.getValue(), data.toLocalDate());
+        }
+        concluida = true;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public Instituicao getDestino() {
+        return destino;
+    }
+
+    public List<ItemDistribuicao> getItens() {
+        return Collections.unmodifiableList(itens);
+    }
+
+    public boolean isConcluida() {
+        return concluida;
     }
 }

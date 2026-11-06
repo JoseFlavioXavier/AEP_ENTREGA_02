@@ -1,79 +1,62 @@
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
+/**
+ * Baixa de um lote por perda (dano, vencimento etc.), para os indicadores de perdas.
+ */
 public class Perda {
-    private int id;
-    private Alimento novoAlimento;
-    private double quantidade;
-    private String motivo;
-    private LocalDate data;
+    private final UUID id;
+    private final Lote lote;
+    private final BigDecimal quantidade;
+    private final String motivo;
+    private final LocalDate data;
     private boolean processada;
 
-    public Perda(int id, Alimento novoAlimento, double quantidade, String motivo) {
-        this.id = id;
-        this.novoAlimento = novoAlimento;
+    public Perda(Lote lote, BigDecimal quantidade, String motivo) {
+        if (lote == null) {
+            throw new ValidacaoException("A perda exige um lote.");
+        }
+        Lote.exigirPositiva(quantidade);
+        if (motivo == null || motivo.isBlank()) {
+            throw new ValidacaoException("O motivo da perda é obrigatório.");
+        }
+        this.id = UUID.randomUUID();
+        this.lote = lote;
         this.quantidade = quantidade;
-        this.motivo = motivo;
+        this.motivo = motivo.trim();
         this.data = LocalDate.now();
-        this.processada = false;
     }
 
-    public int getId() {
+    public void processar() {
+        if (processada) {
+            throw new ValidacaoException("Esta perda já foi processada.");
+        }
+        lote.baixar(quantidade);
+        processada = true;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public Alimento getNovoAlimento() {
-        return novoAlimento;
+    public Lote getLote() {
+        return lote;
     }
 
-    public void setNovoAlimento(Alimento novoAlimento) {
-        this.novoAlimento = novoAlimento;
-    }
-
-    public double getQuantidade() {
+    public BigDecimal getQuantidade() {
         return quantidade;
-    }
-
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;
     }
 
     public String getMotivo() {
         return motivo;
     }
 
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
-
     public LocalDate getData() {
         return data;
     }
 
-    public void setData(LocalDate data) {
-        this.data = data;
-    }
-
     public boolean isProcessada() {
         return processada;
-    }
-
-
-    public boolean processar(Estoque estoque) {
-        if (this.processada) {
-            System.out.println("Erro: Esta perda (ID: " + this.id + ") já foi processada anteriormente.");
-            return false;
-        }
-
-
-        if (this.novoAlimento != null && this.quantidade > 0) {
-            System.out.println("Perda válida registrada. Motivo: " + this.motivo);
-            estoque.registrarPerda(this.quantidade);
-
-            this.processada = true;
-            return true;
-        } else {
-            System.out.println("Perda inválida: quantidade ou alimento incorreto.");
-            return false;
-        }
     }
 }

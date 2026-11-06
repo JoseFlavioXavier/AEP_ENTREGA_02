@@ -1,69 +1,48 @@
-import java.time.LocalDate;
+import java.util.UUID;
 
+/**
+ * Tipo de alimento. A validade e o saldo ficam no Lote, não aqui.
+ */
 public class Alimento {
-    private int id;
+    private final UUID id;
     private String nome;
-    private String categoria;
-    private LocalDate dataValidade;
+    private Categoria categoria;
+    private String unidade;
 
-
-
-    public Alimento(int id, String nome, String categoria, LocalDate dataValidade) {
-        this.id = id;
-        this.nome = nome;
+    public Alimento(String nome, Categoria categoria, String unidade) {
+        this.id = UUID.randomUUID();
+        if (nome == null || nome.isBlank()) {
+            throw new ValidacaoException("Nome do alimento é obrigatório.");
+        }
+        if (categoria == null) {
+            throw new ValidacaoException("Categoria do alimento é obrigatória.");
+        }
+        if (unidade == null || unidade.isBlank()) {
+            throw new ValidacaoException("Unidade do alimento é obrigatória.");
+        }
+        this.nome = nome.trim();
         this.categoria = categoria;
-        this.dataValidade = dataValidade;
+        this.unidade = unidade.trim();
     }
 
-
-    public int getId() {
+    public UUID getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public String getUnidade() {
+        return unidade;
     }
 
-    public LocalDate getDataValidade() {
-        return dataValidade;
-    }
-
-    public void setDataValidade(LocalDate dataValidade) {
-        this.dataValidade = dataValidade;
-    }
-
-    public void exibirAlimento(){
-        System.out.println("O id do alimento é: " + this.id);
-        System.out.println("O nome do alimento é: " + this.nome);
-        System.out.println("A categoria do alimento é: " + this.categoria);
-        System.out.println("A sua data de vencimento é: " + this.dataValidade);
-    }
-
-    public boolean verificarValidade(){
-        LocalDate dataAtual = LocalDate.now();
-
-        if (dataAtual.isAfter(dataValidade)){
-            System.out.println("O alimento: " + nome + "Está próprio para o consumo");
-            return true;
-        } else {
-            System.out.println("O alimento" + nome + "Não está próprio para o consumo");
-            return false;
-        }
+    @Override
+    public String toString() {
+        return nome + " (" + categoria.getDescricao() + ", " + unidade + ")";
     }
 }

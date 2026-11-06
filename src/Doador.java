@@ -1,56 +1,28 @@
-import java.lang.classfile.attribute.SyntheticAttribute;
-import java.util.Scanner;
+public class Doador extends Pessoa {
+    private TipoDoador tipo;
 
-public class Doador {
-    private int id;
-    private String nome;
-    private String documento;
-    private String telefone;
-
-    public Doador(int id, String nome, String documento, String telefone) {
-        this.id = id;
-        this.nome = nome;
-        this.documento = documento;
-        this.telefone = telefone;
+    public Doador(String nome, String documento, String contato, TipoDoador tipo) {
+        super(nome, documento, contato);
+        if (tipo == null) {
+            throw new ValidacaoException("Tipo do doador é obrigatório.");
+        }
+        this.tipo = tipo;
     }
 
-    public int getId() {
-        return id;
+    public TipoDoador getTipo() {
+        return tipo;
     }
 
-    public String getNome() {
-        return nome;
+    public void atualizarDados(String nome, String documento, String contato, TipoDoador tipo) {
+        if (tipo == null) {
+            throw new ValidacaoException("Tipo do doador é obrigatório.");
+        }
+        atualizarDadosBasicos(nome, documento, contato);
+        this.tipo = tipo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    @Override
+    public String descricao() {
+        return "Doador (" + tipo.getDescricao() + "): " + getNome() + " - doc. " + getDocumento();
     }
-
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void exibirDoador(){
-        System.out.println("O ID do doador é" + id);
-        System.out.println("O nome do doador é" + nome);
-        System.out.println("O seu cpf é: " + documento);
-        System.out.println("0 seu telefone é: " + telefone);
-    }
-
-    public void atuazalizarTelone(String novoTelefone){
-        this.telefone =  novoTelefone;
-    }
-
 }

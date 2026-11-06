@@ -1,85 +1,74 @@
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
+/**
+ * Entrada de alimentos. Cada item adicionado gera um Lote com a origem (UC02).
+ */
 public class Doacao {
-    private int id;
-    private Doador novoDoador;
-    private Alimento novoAlimento;
-    private double quantidade;
-    private LocalDate data;
-    private boolean processada;
+    private final UUID id;
+    private final LocalDateTime data;
+    private final Doador doador;
+    private final List<ItemDoacao> itens = new ArrayList<>();
+    private boolean registrada;
 
-    public Doacao(int id, Doador novoDoador, Alimento novoAlimento, double quantidade) {
-        this.id = id;
-        this.novoDoador = novoDoador;
-        this.novoAlimento = novoAlimento;
-        this.quantidade = quantidade;
-        this.data = LocalDate.now();
-        this.processada = false;
+    public Doacao(Doador doador) {
+        this(doador, LocalDateTime.now());
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Doador getNovoDoador() {
-        return novoDoador;
-    }
-
-    public void setNovoDoador(Doador novoDoador) {
-        this.novoDoador = novoDoador;
-    }
-
-    public Alimento getNovoAlimento() {
-        return novoAlimento;
-    }
-
-    public void setNovoAlimento(Alimento novoAlimento) {
-        this.novoAlimento = novoAlimento;
-    }
-
-    public double getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public LocalDate getData() {
-        return data;
-    }
-
-    public void setData(LocalDate data) {
+    public Doacao(Doador doador, LocalDateTime data) {
+        if (doador == null) {
+            throw new ValidacaoException("A doação exige um doador.");
+        }
+        if (data == null) {
+            throw new ValidacaoException("A doação exige uma data.");
+        }
+        this.id = UUID.randomUUID();
+        this.doador = doador;
         this.data = data;
     }
 
-    public boolean isProcessada() {
-        return processada;
+    public ItemDoacao adicionarItem(Alimento alimento, BigDecimal quantidade, LocalDate validade) {
+        if (registrada) {
+            throw new ValidacaoException("Doação já registrada não pode receber novos itens.");
+        }
+        if (alimento == null || validade == null) {
+            throw new ValidacaoException("Item da doação exige alimento e validade.");
+        }
+        if (validade.isBefore(data.toLocalDate())) {
+            throw new LoteVencidoException(alimento.getNome(), validade);
+        }
+        Lote lote = new Lote(alimento, doador, quantidade, validade);
+        ItemDoacao item = new ItemDoacao(quantidade, lote);
+        itens.add(item);
+        return item;
     }
 
-    public void registrarDoacao() {
-        System.out.println("---- Registrar Doacao ----");
-        System.out.println("ID da Doação: " + id);
-        System.out.println("O alimento doado é: " + novoAlimento.getNome());
-        System.out.println("A doação está em nome do doador: " + novoDoador.getNome());
-        System.out.println("A quantidade doada é de: " + quantidade);
+    public UUID getId() {
+        return id;
     }
 
-    public boolean processarDoacao(Estoque estoqueDoacao) {
-        if (this.processada) {
-            System.out.println("Erro: Esta doação (ID: " + this.id + ") já foi processada anteriormente.");
-            return false;
-        }
+    public LocalDateTime getData() {
+        return data;
+    }
 
-        if (this.novoAlimento != null && this.novoAlimento.verificarValidade() && this.quantidade > 0) {
-            System.out.println("Doação aceita, o alimento está próprio para o consumo.");
-            estoqueDoacao.registrarEntrada(this.quantidade);
-            this.processada = true;
-            return true;
+    public Doador getDoador() {
+        return doador;
+    }
 
-        } else {
-            System.out.println("Doação negada, o alimento não está próprio para consumo ou quantidade inválida.");
-            return false;
-        }
+    public List<ItemDoacao> getItens() {
+        return Collections.unmodifiableList(itens);
+    }
+
+    public boolean isRegistrada() {
+        return registrada;
+    }
+
+    void marcarRegistrada() {
+        this.registrada = true;
     }
 }
