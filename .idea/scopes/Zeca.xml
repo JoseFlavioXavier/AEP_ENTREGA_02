@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="Zeca" pattern="src:*..*||lib:*..*||file[bc_alimentos]:*" />
-</component>
