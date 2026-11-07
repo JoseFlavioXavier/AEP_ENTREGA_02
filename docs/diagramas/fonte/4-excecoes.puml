@@ -1,0 +1,32 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 170
+skinparam nodesep 40
+skinparam ranksep 55
+skinparam padding 2
+
+class RuntimeException <<java.lang>>
+
+class ValidacaoException
+
+class LoteVencidoException {
+  + LoteVencidoException(alimento, validade)
+}
+
+class EstoqueInsuficienteException {
+  + EstoqueInsuficienteException(alimento, saldo, pedido)
+}
+
+RuntimeException <|-- ValidacaoException
+ValidacaoException <|-- LoteVencidoException
+ValidacaoException <|-- EstoqueInsuficienteException
+
+note right of ValidacaoException
+  Lançada pelas regras de negócio
+  das entidades e dos serviços.
+end note
+@enduml

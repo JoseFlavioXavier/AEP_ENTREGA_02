@@ -1,0 +1,91 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 170
+skinparam nodesep 40
+skinparam ranksep 55
+skinparam padding 2
+
+interface Identificavel <<interface>> {
+  + getId(): UUID
+}
+
+interface "CrudRepository<T extends Identificavel>" as CrudRepository <<interface>> {
+  + salvar(entidade: T)
+  + buscar(id: UUID): Optional<T>
+  + listar(): List<T>
+  + excluir(id: UUID)
+}
+
+class "InMemoryRepository<T extends Identificavel>" as InMemoryRepository {
+  - registros: Map<UUID, T>
+}
+
+class DoadorService {
+  + cadastrar(nome, documento, contato, tipo): Doador
+  + buscar(id): Doador
+  + listar(): List<Doador>
+  + atualizar(id, nome, documento, contato, tipo)
+  + excluir(id, confirmado)
+  - exigirDocumentoUnico(documento, idIgnorado)
+}
+
+class InstituicaoService {
+  + cadastrar(nome, documento, contato, endereco, capacidade): Instituicao
+  + buscar(id): Instituicao
+  + listar(): List<Instituicao>
+  + atualizar(id, nome, documento, contato, endereco, capacidade)
+  + excluir(id, confirmado)
+  - exigirDocumentoUnico(documento, idIgnorado)
+}
+
+class AlimentoService {
+  + cadastrar(nome, categoria, unidade): Alimento
+  + buscar(id): Alimento
+  + listar(): List<Alimento>
+  + atualizar(id, nome, categoria, unidade)
+  + excluir(id, confirmado)
+  - exigirNomeUnico(nome, idIgnorado)
+}
+
+class EstoqueService {
+  + registrarDoacao(doacao)
+  + distribuir(distribuicao)
+  + registrarPerda(perda)
+  + listarPorValidade(): List<Lote>
+  + listarDisponiveis(data): List<Lote>
+  + listarDistribuicoes(): List<Distribuicao>
+  + possuiLotesDe(doador): boolean
+  + possuiLotesDe(alimento): boolean
+  + possuiDistribuicoesPara(instituicao): boolean
+}
+
+class Lote
+class Doacao
+class Distribuicao
+class Perda
+
+CrudRepository ..> Identificavel
+InMemoryRepository .up.|> CrudRepository
+
+DoadorService --> "1" CrudRepository : repositorio\n<Doador>
+InstituicaoService --> "1" CrudRepository : repositorio\n<Instituicao>
+AlimentoService --> "1" CrudRepository : repositorio\n<Alimento>
+
+DoadorService --> "1" EstoqueService : estoque
+InstituicaoService --> "1" EstoqueService : estoque
+AlimentoService --> "1" EstoqueService : estoque
+
+EstoqueService o-- "0..*" Lote
+EstoqueService o-- "0..*" Distribuicao
+EstoqueService ..> Doacao
+EstoqueService ..> Perda
+
+note bottom of EstoqueService
+  Os serviços manipulam Doador, Instituicao e
+  Alimento por meio do CrudRepository.
+end note
+@enduml
