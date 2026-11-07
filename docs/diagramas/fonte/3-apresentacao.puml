@@ -1,0 +1,97 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 170
+skinparam nodesep 40
+skinparam ranksep 55
+skinparam padding 2
+
+interface Atualizavel <<interface>> {
+  + recarregar()
+}
+
+class App {
+  + main(args: String[]) {static}
+}
+
+class TelaPrincipal <<JFrame>> {
+  - abas: JTabbedPane
+}
+
+class Servicos {
+  + getEstoque(): EstoqueService
+  + getDoadores(): DoadorService
+  + getInstituicoes(): InstituicaoService
+  + getAlimentos(): AlimentoService
+}
+
+abstract class "PainelCrud<T extends Identificavel>" as PainelCrud <<JPanel>> {
+  - modelo: DefaultTableModel
+  - tabela: JTable
+  + recarregar()
+  # adicionarCampo(rotulo, campo)
+  # listarRegistros(): List<T> {abstract}
+  # linha(registro: T): Object[] {abstract}
+  # preencher(registro: T) {abstract}
+  # limparCampos() {abstract}
+  # criar() {abstract}
+  # alterar(registro: T) {abstract}
+  # remover(registro: T) {abstract}
+}
+
+class PainelDoadores
+class PainelInstituicoes
+class PainelAlimentos
+
+class PainelDoacao <<JPanel>> {
+  - pendentes: List<ItemPendente>
+  + recarregar()
+}
+
+class PainelDistribuicao <<JPanel>> {
+  - pendentes: List<ItemPendente>
+  + recarregar()
+}
+
+class PainelEstoque <<JPanel>> {
+  + recarregar()
+}
+
+class DoadorService
+class InstituicaoService
+class AlimentoService
+class EstoqueService
+
+Atualizavel <|.. PainelCrud
+Atualizavel <|.. PainelDoacao
+Atualizavel <|.. PainelDistribuicao
+Atualizavel <|.. PainelEstoque
+
+PainelCrud <|-- PainelDoadores
+PainelCrud <|-- PainelInstituicoes
+PainelCrud <|-- PainelAlimentos
+
+App ..> TelaPrincipal
+App ..> Servicos
+TelaPrincipal "1" o-- "6" Atualizavel : abas
+
+Servicos "1" *-- "1" EstoqueService
+Servicos "1" *-- "1" DoadorService
+Servicos "1" *-- "1" InstituicaoService
+Servicos "1" *-- "1" AlimentoService
+
+PainelDoadores --> DoadorService
+PainelInstituicoes --> InstituicaoService
+PainelAlimentos --> AlimentoService
+PainelDoacao --> Servicos
+PainelDistribuicao --> Servicos
+PainelEstoque --> Servicos
+
+note bottom of PainelEstoque
+  Estereótipos <<JFrame>> e <<JPanel>> indicam a classe do Swing estendida.
+  Entrada, Mensagens e Visual são utilitários usados pelos painéis.
+end note
+@enduml

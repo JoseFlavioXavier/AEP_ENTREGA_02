@@ -1,0 +1,131 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 170
+skinparam nodesep 40
+skinparam ranksep 55
+skinparam padding 2
+
+interface Identificavel <<interface>> {
+  + getId(): UUID
+}
+
+abstract class Pessoa {
+  - id: UUID
+  - nome: String
+  - documento: String
+  - contato: String
+  # atualizarDadosBasicos(nome, documento, contato)
+  + descricao(): String {abstract}
+}
+
+class Doador {
+  - tipo: TipoDoador
+  + atualizarDados(nome, documento, contato, tipo)
+  + descricao(): String
+}
+
+class Instituicao {
+  - endereco: String
+  - capacidade: int
+  + atualizarDados(nome, documento, contato, endereco, capacidade)
+  + descricao(): String
+}
+
+class Alimento {
+  - id: UUID
+  - nome: String
+  - categoria: Categoria
+  - unidade: String
+  + atualizarDados(nome, categoria, unidade)
+}
+
+class Lote {
+  - id: UUID
+  - validade: LocalDate
+  - quantidade: BigDecimal
+  + estaVencido(data): boolean
+  + validarRetirada(valor, data)
+  + retirar(valor, data)
+  + baixar(valor)
+}
+
+class Doacao {
+  - id: UUID
+  - data: LocalDateTime
+  - registrada: boolean
+  + Doacao(doador)
+  + Doacao(doador, data)
+  + adicionarItem(alimento, quantidade, validade): ItemDoacao
+}
+
+class ItemDoacao {
+  - quantidade: BigDecimal
+}
+
+class Distribuicao {
+  - id: UUID
+  - data: LocalDateTime
+  - concluida: boolean
+  + Distribuicao(destino)
+  + Distribuicao(destino, data)
+  + adicionarItem(lote, quantidade): ItemDistribuicao
+  + concluir()
+}
+
+class ItemDistribuicao {
+  - quantidade: BigDecimal
+}
+
+class Perda {
+  - id: UUID
+  - quantidade: BigDecimal
+  - motivo: String
+  - data: LocalDate
+  - processada: boolean
+  + processar()
+}
+
+enum TipoDoador {
+  PESSOA_FISICA
+  PESSOA_JURIDICA
+}
+
+enum Categoria {
+  GRAOS
+  ENLATADOS
+  LATICINIOS
+  HORTIFRUTI
+  PROTEINAS
+  BEBIDAS
+  OUTROS
+}
+
+Identificavel <|.. Pessoa
+Identificavel <|.. Alimento
+Pessoa <|-- Doador
+Pessoa <|-- Instituicao
+
+Doador --> TipoDoador
+Alimento --> Categoria
+
+Doacao "1" *-- "1..*" ItemDoacao
+Distribuicao "1" *-- "1..*" ItemDistribuicao
+
+Doacao "0..*" --> "1" Doador : doador
+Distribuicao "0..*" --> "1" Instituicao : destino
+
+ItemDoacao "1" --> "1" Lote
+ItemDistribuicao "0..*" --> "1" Lote
+Perda "0..*" --> "1" Lote
+
+Lote "0..*" --> "1" Alimento
+Lote "0..*" --> "1" Doador : origem
+
+note bottom of Pessoa
+  Getters omitidos para facilitar a leitura.
+end note
+@enduml
