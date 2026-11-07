@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Entrada de alimentos. Cada item adicionado gera um Lote com a origem (UC02).
- */
 public class Doacao {
     private final UUID id;
     private final LocalDateTime data;

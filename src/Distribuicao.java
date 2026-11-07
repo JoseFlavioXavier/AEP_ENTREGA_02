@@ -7,10 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Saída de alimentos para uma Instituicao (UC04). O saldo só é reduzido em
- * concluir(), e apenas se todos os itens forem válidos (RN03, RN04, RN05).
- */
 public class Distribuicao {
     private final UUID id;
     private final LocalDateTime data;
@@ -47,10 +43,6 @@ public class Distribuicao {
         return item;
     }
 
-    /**
-     * Valida todos os itens primeiro (somando pedidos repetidos do mesmo lote)
-     * e só então retira. Se qualquer item falhar, nenhum saldo é alterado.
-     */
     public void concluir() {
         if (concluida) {
             throw new ValidacaoException("Distribuição já concluída.");

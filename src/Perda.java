@@ -2,9 +2,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/**
- * Baixa de um lote por perda (dano, vencimento etc.), para os indicadores de perdas.
- */
 public class Perda {
     private final UUID id;
     private final Lote lote;

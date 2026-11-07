@@ -1,8 +1,5 @@
 import java.math.BigDecimal;
 
-/**
- * Lançada quando a retirada pedida é maior que o saldo do lote (RN03).
- */
 public class EstoqueInsuficienteException extends ValidacaoException {
     private static final long serialVersionUID = 1L;
 

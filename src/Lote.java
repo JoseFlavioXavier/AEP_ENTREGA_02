@@ -2,9 +2,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/**
- * Lote: reúne alimento, origem, validade e saldo (RN02, RN03).
- */
 public class Lote {
     private final UUID id;
     private final Alimento alimento;
@@ -40,17 +37,14 @@ public class Lote {
         return validade;
     }
 
-    /** Saldo atual do lote. */
     public BigDecimal getQuantidade() {
         return quantidade;
     }
 
-    /** Vencido quando a validade é anterior à data informada (RN03). */
     public boolean estaVencido(LocalDate data) {
         return validade.isBefore(data);
     }
 
-    /** Confere se a retirada seria permitida, sem alterar o saldo. */
     public void validarRetirada(BigDecimal valor, LocalDate data) {
         exigirPositiva(valor);
         if (estaVencido(data)) {
@@ -61,13 +55,11 @@ public class Lote {
         }
     }
 
-    /** Saída para distribuição: exige lote dentro da validade e saldo suficiente. */
     public void retirar(BigDecimal valor, LocalDate data) {
         validarRetirada(valor, data);
         quantidade = quantidade.subtract(valor);
     }
 
-    /** Baixa por perda: permitida mesmo em lote vencido, mas nunca acima do saldo. */
     public void baixar(BigDecimal valor) {
         exigirPositiva(valor);
         if (valor.compareTo(quantidade) > 0) {
