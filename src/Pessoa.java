@@ -1,9 +1,6 @@
 import java.util.UUID;
 
-/**
- * Classe abstrata com os dados comuns de Doador e Instituicao (RN01).
- */
-public abstract class Pessoa {
+public abstract class Pessoa implements Identificavel {
     private final UUID id;
     private String nome;
     private String documento;
@@ -14,10 +11,6 @@ public abstract class Pessoa {
         atualizarDadosBasicos(nome, documento, contato);
     }
 
-    /**
-     * Valida tudo antes de alterar qualquer campo: se algo for inválido,
-     * os dados anteriores são preservados (RN05 / RNF03).
-     */
     protected final void atualizarDadosBasicos(String nome, String documento, String contato) {
         String n = exigirTexto(nome, "Nome");
         String d = exigirTexto(documento, "Documento");
@@ -34,6 +27,7 @@ public abstract class Pessoa {
         return valor.trim();
     }
 
+    @Override
     public UUID getId() {
         return id;
     }
@@ -50,7 +44,6 @@ public abstract class Pessoa {
         return contato;
     }
 
-    /** Cada subclasse descreve a si mesma (polimorfismo). */
     public abstract String descricao();
 
     @Override

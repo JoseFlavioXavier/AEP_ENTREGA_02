@@ -1,8 +1,5 @@
 import java.math.BigDecimal;
 
-/**
- * Item de uma Distribuicao (composição). Só a própria Distribuicao o cria.
- */
 public class ItemDistribuicao {
     private final BigDecimal quantidade;
     private final Lote lote;

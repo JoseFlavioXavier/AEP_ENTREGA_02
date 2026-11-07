@@ -1,9 +1,6 @@
 import java.util.UUID;
 
-/**
- * Tipo de alimento. A validade e o saldo ficam no Lote, não aqui.
- */
-public class Alimento {
+public class Alimento implements Identificavel {
     private final UUID id;
     private String nome;
     private Categoria categoria;
@@ -11,6 +8,10 @@ public class Alimento {
 
     public Alimento(String nome, Categoria categoria, String unidade) {
         this.id = UUID.randomUUID();
+        atualizarDados(nome, categoria, unidade);
+    }
+
+    public final void atualizarDados(String nome, Categoria categoria, String unidade) {
         if (nome == null || nome.isBlank()) {
             throw new ValidacaoException("Nome do alimento é obrigatório.");
         }
@@ -25,6 +26,7 @@ public class Alimento {
         this.unidade = unidade.trim();
     }
 
+    @Override
     public UUID getId() {
         return id;
     }
