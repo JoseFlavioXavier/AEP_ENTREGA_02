@@ -1,0 +1,93 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 170
+skinparam nodesep 50
+skinparam ranksep 60
+hide circle
+
+entity doador {
+  * id_doador : INT <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * tipo : VARCHAR(16)
+  * documento : VARCHAR(14) <<UQ>>
+  * contato : VARCHAR(80)
+}
+
+entity instituicao {
+  * id_instituicao : INT <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * documento : CHAR(14) <<UQ>>
+  * contato : VARCHAR(80)
+  * endereco : VARCHAR(160)
+  * capacidade : INT
+}
+
+entity categoria {
+  * id_categoria : TINYINT <<PK>>
+  --
+  * nome : VARCHAR(40) <<UQ>>
+}
+
+entity alimento {
+  * id_alimento : INT <<PK>>
+  --
+  * nome : VARCHAR(80) <<UQ>>
+  * unidade : VARCHAR(10)
+  * id_categoria : TINYINT <<FK>>
+}
+
+entity doacao {
+  * id_doacao : INT <<PK>>
+  --
+  * data_doacao : DATETIME
+  * id_doador : INT <<FK>>
+}
+
+entity lote {
+  * id_lote : INT <<PK>>
+  --
+  * quantidade_inicial : DECIMAL(12,3)
+  * saldo : DECIMAL(12,3)
+  * validade : DATE
+  * id_doacao : INT <<FK>>
+  * id_alimento : INT <<FK>>
+}
+
+entity distribuicao {
+  * id_distribuicao : INT <<PK>>
+  --
+  * data_distribuicao : DATETIME
+  * id_instituicao : INT <<FK>>
+}
+
+entity item_distribuicao {
+  * id_item_distribuicao : INT <<PK>>
+  --
+  * quantidade : DECIMAL(12,3)
+  * id_distribuicao : INT <<FK>>
+  * id_lote : INT <<FK>>
+}
+
+entity perda {
+  * id_perda : INT <<PK>>
+  --
+  * quantidade : DECIMAL(12,3)
+  * motivo : VARCHAR(200)
+  * data_perda : DATE
+  * id_lote : INT <<FK>>
+}
+
+doador ||--o{ doacao : faz
+doacao ||--|{ lote : gera
+categoria ||--o{ alimento : classifica
+alimento ||--o{ lote : compõe
+instituicao ||--o{ distribuicao : recebe
+distribuicao ||--|{ item_distribuicao : contém
+lote ||--o{ item_distribuicao : sai em
+lote ||--o{ perda : sofre
+@enduml
