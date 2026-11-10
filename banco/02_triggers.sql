@@ -2,6 +2,17 @@ USE banco_alimentos;
 
 DELIMITER $$
 
+DROP TRIGGER IF EXISTS trg_alimento_bu$$
+CREATE TRIGGER trg_alimento_bu BEFORE UPDATE ON alimento
+FOR EACH ROW
+BEGIN
+    IF NEW.unidade <> OLD.unidade
+       AND EXISTS (SELECT 1 FROM lote WHERE id_alimento = OLD.id_alimento) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'A unidade de medida não pode ser alterada: o alimento já tem lotes.';
+    END IF;
+END$$
+
 DROP TRIGGER IF EXISTS trg_lote_bi$$
 CREATE TRIGGER trg_lote_bi BEFORE INSERT ON lote
 FOR EACH ROW

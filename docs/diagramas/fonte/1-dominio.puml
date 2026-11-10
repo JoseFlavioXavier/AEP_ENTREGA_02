@@ -39,7 +39,7 @@ class Alimento {
   - id: UUID
   - nome: String
   - categoria: Categoria
-  - unidade: String
+  - unidade: UnidadeMedida
   + atualizarDados(nome, categoria, unidade)
 }
 
@@ -94,6 +94,14 @@ enum TipoDoador {
   PESSOA_JURIDICA
 }
 
+enum UnidadeMedida {
+  KG
+  G
+  L
+  ML
+  UN
+}
+
 enum Categoria {
   GRAOS
   ENLATADOS
@@ -111,6 +119,7 @@ Pessoa <|-- Instituicao
 
 Doador --> TipoDoador
 Alimento --> Categoria
+Alimento --> UnidadeMedida
 
 Doacao "1" *-- "1..*" ItemDoacao
 Distribuicao "1" *-- "1..*" ItemDistribuicao

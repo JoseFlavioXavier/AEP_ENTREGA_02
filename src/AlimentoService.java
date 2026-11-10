@@ -13,7 +13,7 @@ public class AlimentoService {
         this.estoque = estoque;
     }
 
-    public Alimento cadastrar(String nome, Categoria categoria, String unidade) {
+    public Alimento cadastrar(String nome, Categoria categoria, UnidadeMedida unidade) {
         exigirNomeUnico(nome, null);
         Alimento alimento = new Alimento(nome, categoria, unidade);
         repositorio.salvar(alimento);
@@ -29,9 +29,12 @@ public class AlimentoService {
         return repositorio.listar();
     }
 
-    public void atualizar(UUID id, String nome, Categoria categoria, String unidade) {
+    public void atualizar(UUID id, String nome, Categoria categoria, UnidadeMedida unidade) {
         Alimento alimento = buscar(id);
         exigirNomeUnico(nome, id);
+        if (unidade != null && unidade != alimento.getUnidade() && estoque.possuiLotesDe(alimento)) {
+            throw new ValidacaoException("A unidade de medida não pode ser alterada: o alimento já tem lotes no estoque.");
+        }
         alimento.atualizarDados(nome, categoria, unidade);
     }
 

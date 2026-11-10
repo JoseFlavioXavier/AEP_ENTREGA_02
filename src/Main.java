@@ -60,9 +60,9 @@ public class Main {
         System.out.println("Capacidade atualizada: " + instituicoes.buscar(creche.getId()).getCapacidade() + "\n");
 
         System.out.println("--- CRUD de alimentos ---");
-        Alimento arroz = alimentos.cadastrar("Arroz Tipo 1", Categoria.GRAOS, "kg");
+        Alimento arroz = alimentos.cadastrar("Arroz Tipo 1", Categoria.GRAOS, UnidadeMedida.KG);
         try {
-            alimentos.cadastrar("arroz tipo 1", Categoria.GRAOS, "kg");
+            alimentos.cadastrar("arroz tipo 1", Categoria.GRAOS, UnidadeMedida.KG);
         } catch (ValidacaoException e) {
             System.out.println("Bloqueado: " + e.getMessage());
         }

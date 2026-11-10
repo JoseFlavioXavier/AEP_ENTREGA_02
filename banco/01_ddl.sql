@@ -53,7 +53,7 @@ CREATE TABLE alimento (
     CONSTRAINT fk_alimento_categoria FOREIGN KEY (id_categoria)
         REFERENCES categoria (id_categoria) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT ck_alimento_nome CHECK (CHAR_LENGTH(TRIM(nome)) > 0),
-    CONSTRAINT ck_alimento_unidade CHECK (CHAR_LENGTH(TRIM(unidade)) > 0)
+    CONSTRAINT ck_alimento_unidade CHECK (unidade IN ('kg', 'g', 'l', 'ml', 'un'))
 ) ENGINE = InnoDB;
 
 CREATE TABLE doacao (

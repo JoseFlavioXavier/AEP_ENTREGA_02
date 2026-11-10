@@ -6,15 +6,16 @@ public class PainelAlimentos extends PainelCrud<Alimento> {
     private final AlimentoService servico;
     private final JTextField nome = new JTextField(20);
     private final JComboBox<Categoria> categoria = new JComboBox<>(Categoria.values());
-    private final JTextField unidade = new JTextField(20);
+    private final JComboBox<UnidadeMedida> unidade = new JComboBox<>(UnidadeMedida.values());
 
     public PainelAlimentos(AlimentoService servico) {
-        super("Alimento", "Nome", "Categoria", "Unidade");
+        super("Alimento", "Nome", "Categoria", "Unidade de medida");
         this.servico = servico;
         Visual.rotulos(categoria);
+        Visual.rotulos(unidade);
         adicionarCampo("Nome", nome);
         adicionarCampo("Categoria", categoria);
-        adicionarCampo("Unidade", unidade);
+        adicionarCampo("Unidade de medida", unidade);
         recarregar();
     }
 
@@ -25,31 +26,33 @@ public class PainelAlimentos extends PainelCrud<Alimento> {
 
     @Override
     protected Object[] linha(Alimento a) {
-        return new Object[] {a.getNome(), a.getCategoria().getDescricao(), a.getUnidade()};
+        return new Object[] {a.getNome(), a.getCategoria().getDescricao(), a.getUnidade().getDescricao()};
     }
 
     @Override
     protected void preencher(Alimento a) {
         nome.setText(a.getNome());
         categoria.setSelectedItem(a.getCategoria());
-        unidade.setText(a.getUnidade());
+        unidade.setSelectedItem(a.getUnidade());
     }
 
     @Override
     protected void limparCampos() {
         nome.setText("");
         categoria.setSelectedIndex(0);
-        unidade.setText("");
+        unidade.setSelectedIndex(0);
     }
 
     @Override
     protected void criar() {
-        servico.cadastrar(nome.getText(), (Categoria) categoria.getSelectedItem(), unidade.getText());
+        servico.cadastrar(nome.getText(), (Categoria) categoria.getSelectedItem(),
+                (UnidadeMedida) unidade.getSelectedItem());
     }
 
     @Override
     protected void alterar(Alimento a) {
-        servico.atualizar(a.getId(), nome.getText(), (Categoria) categoria.getSelectedItem(), unidade.getText());
+        servico.atualizar(a.getId(), nome.getText(), (Categoria) categoria.getSelectedItem(),
+                (UnidadeMedida) unidade.getSelectedItem());
     }
 
     @Override

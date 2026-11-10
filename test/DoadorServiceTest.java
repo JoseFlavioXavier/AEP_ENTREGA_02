@@ -113,7 +113,7 @@ class DoadorServiceTest {
     void doadorComLoteNaoEExcluido() {
         Doador doador = cadastrarPadrao();
         Doacao doacao = new Doacao(doador);
-        doacao.adicionarItem(new Alimento("Arroz", Categoria.GRAOS, "kg"), new BigDecimal("10"),
+        doacao.adicionarItem(new Alimento("Arroz", Categoria.GRAOS, UnidadeMedida.KG), new BigDecimal("10"),
                 LocalDate.now().plusMonths(3));
         estoque.registrarDoacao(doacao);
         assertThrows(ValidacaoException.class, () -> servico.excluir(doador.getId(), true));
