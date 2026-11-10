@@ -54,6 +54,9 @@ public final class Visual {
         if (valor instanceof Categoria) {
             return ((Categoria) valor).getDescricao();
         }
+        if (valor instanceof UnidadeMedida) {
+            return ((UnidadeMedida) valor).getDescricao();
+        }
         return valor.toString();
     }
 }

@@ -26,8 +26,8 @@ class EstoqueServiceTest {
                 TipoDoador.PESSOA_JURIDICA);
         creche = new Instituicao("Creche Sol Nascente", "98.765.432/0001-10", "(43) 3333-0000",
                 "Rua das Flores, 100", 80);
-        arroz = new Alimento("Arroz", Categoria.GRAOS, "kg");
-        feijao = new Alimento("Feijão", Categoria.GRAOS, "kg");
+        arroz = new Alimento("Arroz", Categoria.GRAOS, UnidadeMedida.KG);
+        feijao = new Alimento("Feijão", Categoria.GRAOS, UnidadeMedida.KG);
     }
 
     private Lote registrarLote(Alimento alimento, String quantidade, LocalDate validade) {

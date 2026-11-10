@@ -15,7 +15,7 @@ Também dá para executar os arquivos um por um, nesta ordem:
 | Arquivo | Conteúdo |
 | --- | --- |
 | 01_ddl.sql | Banco, tabelas, chaves, restrições, índices e categorias |
-| 02_triggers.sql | Saldo do lote, bloqueio de saída inválida e proteção do histórico |
+| 02_triggers.sql | Saldo do lote, bloqueio de saída inválida, proteção do histórico e da unidade de medida |
 | 03_funcoes_procedures.sql | Funções de validade e procedures de doação, distribuição e perda |
 | 04_views.sql | Estoque por validade, doações por período, distribuições por trimestre, indicadores, rastreabilidade e conferência de saldo |
 | 05_dados_teste.sql | Dados de teste (rodar uma vez após o 01 a 04) |

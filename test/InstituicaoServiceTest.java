@@ -77,7 +77,7 @@ class InstituicaoServiceTest {
         Instituicao creche = cadastrarPadrao();
         Doador doador = new Doador("Supermercado", "12.345.678/0001-99", "contato", TipoDoador.PESSOA_JURIDICA);
         Doacao doacao = new Doacao(doador);
-        ItemDoacao item = doacao.adicionarItem(new Alimento("Arroz", Categoria.GRAOS, "kg"),
+        ItemDoacao item = doacao.adicionarItem(new Alimento("Arroz", Categoria.GRAOS, UnidadeMedida.KG),
                 new BigDecimal("10"), LocalDate.now().plusMonths(3));
         estoque.registrarDoacao(doacao);
         Distribuicao distribuicao = new Distribuicao(creche);

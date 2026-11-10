@@ -210,6 +210,16 @@ BEGIN NOT ATOMIC
         JSON_OBJECT('id_lote', @lote_arroz, 'quantidade', 99999)), @s);
     SELECT '20. Atomicidade' AS cenario, 'FALHOU: nenhum erro foi gerado' AS resultado;
 END$$
+BEGIN NOT ATOMIC
+    DECLARE v_mensagem TEXT;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1 v_mensagem = MESSAGE_TEXT;
+        SELECT '21. Alterar a unidade de um alimento que já tem lote' AS cenario, 'BLOQUEADO' AS resultado, v_mensagem AS mensagem;
+    END;
+    UPDATE alimento SET unidade = 'g' WHERE nome = 'Arroz Tipo 1';
+    SELECT '21. Alterar a unidade de um alimento que já tem lote' AS cenario, 'FALHOU: nenhum erro foi gerado' AS resultado;
+END$$
 DELIMITER ;
 SELECT 'Conferência após os testes' AS titulo;
 SELECT 'saldo do lote de arroz' AS item, @saldo_antes AS antes, saldo AS depois,
