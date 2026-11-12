@@ -1,13 +1,14 @@
+package sistop;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 // =========================================================================
-// CLASSE: Main
+// CLASSE: SimuladorSO
 // Interface gráfica e integração entre GalpaoManager e CacheEstoque.
 // =========================================================================
-public class Main extends JFrame {
+public class SimuladorSO extends JFrame {
 
     private final GalpaoManager galpaoManager = new GalpaoManager();
     private final CacheEstoque cacheEstoque = new CacheEstoque(4);
@@ -31,7 +32,7 @@ public class Main extends JFrame {
     // =========================================================================
     // CONSTRUTOR
     // =========================================================================
-    public Main() {
+    public SimuladorSO() {
 
         setTitle("Simulação S.O. & Galpão Logístico - Projeto Integrado");
         setSize(950, 700);
@@ -418,7 +419,7 @@ public class Main extends JFrame {
 
         SwingUtilities.invokeLater(() -> {
 
-            new Main().setVisible(true);
+            new SimuladorSO().setVisible(true);
 
         });
     }
