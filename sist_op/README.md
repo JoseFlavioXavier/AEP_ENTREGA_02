@@ -1,6 +1,6 @@
 # Simulador de Sistemas Operacionais (AEP 2026.2)
 
-Simulação em Java do galpão do Banco de Alimentos (recepção, triagem e expedição) e comparação de substituição de cache (FIFO e LRU). Relatório: `docs/relatorio_sist_op/relatorio_sist_op.docx`.
+Simulação em Java do galpão do Banco de Alimentos (recepção, triagem e expedição) e comparação de substituição de cache (FIFO e LRU). Relatório: `docs/sistemas_operacionais/relatorio_sist_op.docx`.
 
 ## Como executar
 - **IntelliJ:** abra `sist_op/src/sistop/SimuladorSO.java` e execute o `main` (módulo `sist_op`).
